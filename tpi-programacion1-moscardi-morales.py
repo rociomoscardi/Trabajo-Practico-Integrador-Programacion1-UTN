@@ -302,6 +302,37 @@ def filtrar_pais_superficie():
             print(f"País: {pais['nombre']} - Continente: {pais['continente']} - Población: {pais['poblacion']} - Superficie: {pais['superficie']}")
     print()
 
+# 5. Ordenar países (nombre/población/superficie).
+def ordenar_paises():
+    while True:
+        opcion = input("Seleccione una de las siguientes opciones: "
+        "\n1. Ordenar países por nombre. " 
+        "\n2. Ordenar países por población. " 
+        "\n3. Ordenar países por superficie (ascendente/descendente). " 
+        "\n4. Volver. \n").strip()
+
+        if not validar_numero(opcion):
+            print ("El número ingresado no es válido. ")
+            return
+        else:
+            opcion = int(opcion)
+        
+        print("-------------------------------------------")
+
+        match opcion:
+            case 1: # Ordenar países por nombre.
+                pass
+            case 2: # Ordenar países por población.
+                pass
+            case 3: # Ordenar países por superficie (ascendente/descendente). 
+                pass
+            case 4: # Volver.
+                print("Volviendo...")
+                return
+            case _:
+                print("Por favor, seleccione una opción válida.")
+
+
 # Función que muestra el menú
 def mostrar_menu_principal():
     while True:
@@ -334,7 +365,7 @@ def mostrar_menu_principal():
             case 4: # Filtrar países (continente/rango de pobalción/rango de superficie).
                 filtrar_paises()
             case 5: # Ordenar países (nombre/población/superficie).
-                pass
+                ordenar_paises()
             case 6: # Mostrar estadísticas. 
                 pass
             case 7: # Salir

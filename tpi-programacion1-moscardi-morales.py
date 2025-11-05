@@ -179,7 +179,7 @@ def filtrar_paises():
         "\n1. Filtrar países por continente. " 
         "\n2. Filtrar países por rango de población. " 
         "\n3. Filtrar países por rango de superficie. " 
-        "\n4. Volver. ").strip()
+        "\n4. Volver. \n").strip()
 
         if not validar_numero(opcion):
             print ("El número ingresado no es válido. ")
@@ -313,7 +313,7 @@ def mostrar_menu_principal():
         "\n4. Filtrar países (continente/rango de pobalción/rango de superficie). "
         "\n5. Ordenar paises (nombre/población/superficie). "
         "\n6. Mostrar estadísticas. "
-        "\n7. Salir. ").strip()
+        "\n7. Salir. \n").strip()
 
         if not validar_numero(opcion):
             print ("El número ingresado no es válido. ")

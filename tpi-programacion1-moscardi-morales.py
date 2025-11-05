@@ -115,13 +115,15 @@ def actualizar_poblacion_superficie():
     if not validar_numero(nueva_poblacion) or nueva_poblacion == "":
         print("La población ingresada no es válida.")
         return
-    nueva_poblacion = float(nueva_poblacion)
+    else:
+        nueva_poblacion = float(nueva_poblacion)
 
     nueva_superficie = input("Ingrese la nueva superficie (en km²): ").strip()
     if not validar_numero(nueva_superficie) or nueva_superficie == "":
         print("La superficie ingresada no es válida.")
         return
-    nueva_superficie = float(nueva_superficie)
+    else:
+        nueva_superficie = float(nueva_superficie)
 
     # Actualiza los datos en la lista
     actualizado = False
@@ -191,7 +193,7 @@ def filtrar_paises():
             case 1: # Filtrar por continente.
                 filtrar_pais_continente()
             case 2: # Filtrar por rango de población.
-                pass
+                filtrar_pais_poblacion()
             case 3: # Filtrar por rango de superficie. 
                 pass
             case 4: # Volver.
@@ -223,6 +225,42 @@ def filtrar_pais_continente():
 
     if len(encontrados) == 0:
         print(f"No se encontraron países que pertenezcan a {continente}.")
+    else:
+        for pais in encontrados:
+            print(f"País: {pais['nombre']} - Continente: {pais['continente']} - Población: {pais['poblacion']} - Superficie: {pais['superficie']}")
+    print()
+
+# 4.2 Filtrar países por rango de población
+def filtrar_pais_poblacion():
+    paises = obtenerPaises()
+    
+    if len(paises) == 0:
+        print("No hay países en el archivo. ")
+        return
+    
+    min_pob = input("Ingrese la población mínima: ").strip()
+    max_pob = input("Ingrese la población máxima: ").strip()
+    print()
+
+    if not validar_numero(min_pob) or not validar_numero(max_pob):
+        print("Ambos valores deben ser números válidos.")
+        return
+    else:
+        min_pob = float(min_pob)
+        max_pob = float(max_pob)
+
+    if min_pob > max_pob:
+        print("La población mínima no puede ser mayor que la máxima.")
+        return
+
+    encontrados = []
+    
+    for pais in paises:
+        if min_pob <= pais["poblacion"] <= max_pob:
+            encontrados.append(pais)
+
+    if len(encontrados) == 0:
+        print(f"No se encontraron países con población entre a {min_pob} y {max_pob}.")
     else:
         for pais in encontrados:
             print(f"País: {pais['nombre']} - Continente: {pais['continente']} - Población: {pais['poblacion']} - Superficie: {pais['superficie']}")

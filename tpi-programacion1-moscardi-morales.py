@@ -4,11 +4,10 @@ NOMBRE_ARCHIVO = "paises.csv"
 
 # Función que valida los números ingresados
 def validar_numero(numero):
-    try:
-        float(numero)
-        return True
-    except ValueError:
+    if not numero.isdigit():
         return False
+    else:
+        return True
 
 # Función que valida que el país no exista dentro del archivo
 def existe_pais(nombre_pais):
@@ -145,6 +144,32 @@ def actualizar_poblacion_superficie():
 
     print(f"Se actualizaron correctamente los datos de '{pais_ingresado}'.")
 
+# 3. Buscar un país por nombre (coincidencia parcial o exacta)
+def buscar_pais_nombre():
+    paises = obtenerPaises()
+    
+    if len(paises) == 0:
+        print("No hay países en el archivo. ")
+        return
+    
+    pais_ingresado = input("Ingrese el nombre del país que desea buscar: ").strip().title()
+
+    if pais_ingresado == "":
+        print("El país ingresado no puede estar vacío.")
+        return
+
+    encontrados = []
+    
+    for pais in paises:
+        if pais_ingresado in pais["nombre"].title():
+            encontrados.append(pais)
+
+    if len(encontrados) == 0:
+        print(f"No se encontraron países que coincidad con '{pais_ingresado}'")
+    else:
+        for pais in encontrados:
+            print(f"País: {pais['nombre']} - Continente: {pais['continente']} - Población: {pais['poblacion']} - Superficie: {pais['superficie']}")
+
 # Función que muestra el menú
 def mostrar_menu():
     while True:
@@ -173,7 +198,7 @@ def mostrar_menu():
             case 2: # Actualizar los datos de población y superfice de un país. 
                 actualizar_poblacion_superficie()
             case 3: # Buscar un país por nombre (coincidencia parcial o exacta). 
-                pass
+                buscar_pais_nombre()
             case 4: # Filtrar países (continente/rango de pobalción/rango de superficie).
                 pass
             case 5: # Ordenar países (nombre/población/superficie).

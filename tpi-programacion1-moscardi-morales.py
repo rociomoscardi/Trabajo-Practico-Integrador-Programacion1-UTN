@@ -11,11 +11,11 @@ def validar_numero(numero):
         return False
 
 # Función que valida que el país no exista dentro del archivo
-def existe_pais(pais):
+def existe_pais(nombre_pais):
     paises = obtenerPaises()
 
     for pais in paises:
-        if pais["nombre"].lower() == pais.lower():
+        if pais["nombre"].lower() == nombre_pais.lower():
             return True
         
     return False
@@ -28,7 +28,7 @@ def obtenerPaises():
         print("El archivo no existe. Se está creando uno en este momento.")
         # Si no existe, lo crea
         with open (NOMBRE_ARCHIVO, "w", newline="", encoding="utf-8") as archivo:
-            escritor = csv.DictWriter(archivo, fieldnames=["nombre", "poblacion", "superficie"])
+            escritor = csv.DictWriter(archivo, fieldnames=["nombre", "continente","poblacion", "superficie"])
             escritor.writeheader()
             return paises
 
@@ -37,7 +37,7 @@ def obtenerPaises():
         lector = csv.DictReader(archivo)
 
         for fila in lector:
-            paises.append({"nombre": fila["nombre"].strip().title(), "continente": fila["continente"].strip().title(),"poblacion": int(fila["poblacion"]), "superficie": int(fila["superficie"])})
+            paises.append({"nombre": fila["nombre"].strip().title(), "continente": fila["continente"].strip().title(),"poblacion": float(fila["poblacion"]), "superficie": float(fila["superficie"])})
     return paises
 
 # Función que guarda un nuevo país en el archivo sin modificar los existentes
@@ -88,13 +88,70 @@ def agregar_pais():
     agregarPais({"nombre": pais, "continente": continente, "poblacion": poblacion, "superficie": superficie})
     print(f"Se agregó correctamente: '{pais}' con sus datos correspondientes. ")
 
+# 2. Actualizar población y superficie
+def actualizar_poblacion_superficie():
+    paises = obtenerPaises()
+    
+    if len(paises) == 0:
+        print("No hay países en el archivo. Debe ingresar al menos uno para poder modificar su población y superficie. ")
+        return
+    
+    # Muestra los países para que el usuario pueda elegir
+    print("Lista de países: ")
+    for pais in paises:
+        print(f"País: {pais['nombre']} - Población: {pais['poblacion']} - Superficie: {pais['superficie']}.")
+
+    pais_ingresado = input("Ingrese el país para modificar su población y superficie. ").strip().title()
+
+    if pais_ingresado == "":
+        print("El país ingresado no puede estar vacío.")
+        return
+
+    if not existe_pais(pais_ingresado):
+        print(f"'{pais_ingresado}' no se encuentra en el listado.")
+        return
+    
+    # Solicita nuevos datos
+    nueva_poblacion = input("Ingrese la nueva población: ").strip()
+    if not validar_numero(nueva_poblacion) or nueva_poblacion == "":
+        print("La población ingresada no es válida.")
+        return
+    nueva_poblacion = float(nueva_poblacion)
+
+    nueva_superficie = input("Ingrese la nueva superficie (en km²): ").strip()
+    if not validar_numero(nueva_superficie) or nueva_superficie == "":
+        print("La superficie ingresada no es válida.")
+        return
+    nueva_superficie = float(nueva_superficie)
+
+    # Actualiza los datos en la lista
+    actualizado = False
+    for pais in paises:
+        if pais["nombre"].lower() == pais_ingresado.lower():
+            pais["poblacion"] = nueva_poblacion
+            pais["superficie"] = nueva_superficie
+            actualizado = True
+            break
+
+    if not actualizado:
+        print("No se pudo actualizar el país.")
+        return
+
+    # Reescribe el archivo CSV con los datos actualizados
+    with open(NOMBRE_ARCHIVO, "w", newline="", encoding="utf-8") as archivo:
+        escritor = csv.DictWriter(archivo, fieldnames=["nombre", "continente", "poblacion", "superficie"])
+        escritor.writeheader()
+        escritor.writerows(paises)
+
+    print(f"Se actualizaron correctamente los datos de '{pais_ingresado}'.")
+
 # Función que muestra el menú
 def mostrar_menu():
     while True:
         print("\n============ PAÍSES DEL MUNDO ============")
         opcion = input("Seleccione una de las siguientes opciones: "
         "\n1. Agregar país. " 
-        "\n2. Actualizar Población y Superficie. " 
+        "\n2. Actualizar población y superficie. " 
         "\n3. Buscar un país por nombre. " 
         "\n4. Filtrar países (continente/rango de pobalción/rango de superficie). "
         "\n5. Ordenar paises (nombre/población/superficie). "
@@ -113,13 +170,13 @@ def mostrar_menu():
         match opcion:
             case 1: # Agregar un país con todos los datos necesarios para almacenarse (No se permiten campos vacios). 
                 agregar_pais()
-            case 2: # Actualizar los datos de Población y Superfice de un Pais. 
-                pass
+            case 2: # Actualizar los datos de población y superfice de un país. 
+                actualizar_poblacion_superficie()
             case 3: # Buscar un país por nombre (coincidencia parcial o exacta). 
                 pass
             case 4: # Filtrar países (continente/rango de pobalción/rango de superficie).
                 pass
-            case 5: # Ordenar paises (nombre/población/superficie).
+            case 5: # Ordenar países (nombre/población/superficie).
                 pass
             case 6: # Mostrar estadísticas. 
                 pass

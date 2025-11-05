@@ -195,7 +195,7 @@ def filtrar_paises():
             case 2: # Filtrar por rango de población.
                 filtrar_pais_poblacion()
             case 3: # Filtrar por rango de superficie. 
-                pass
+                filtrar_pais_superficie()
             case 4: # Volver.
                 print("Volviendo...")
                 return
@@ -261,6 +261,42 @@ def filtrar_pais_poblacion():
 
     if len(encontrados) == 0:
         print(f"No se encontraron países con población entre a {min_pob} y {max_pob}.")
+    else:
+        for pais in encontrados:
+            print(f"País: {pais['nombre']} - Continente: {pais['continente']} - Población: {pais['poblacion']} - Superficie: {pais['superficie']}")
+    print()
+
+# 4.3 Filtrar países por rango de superficie
+def filtrar_pais_superficie():
+    paises = obtenerPaises()
+    
+    if len(paises) == 0:
+        print("No hay países en el archivo. ")
+        return
+    
+    min_sup = input("Ingrese la superficie mínima: ").strip()
+    max_sup = input("Ingrese la superficie máxima: ").strip()
+    print()
+
+    if not validar_numero(min_sup) or not validar_numero(max_sup):
+        print("Ambos valores deben ser números válidos.")
+        return
+    else:
+        min_sup = float(min_sup)
+        max_sup = float(max_sup)
+
+    if min_sup > max_sup:
+        print("La superficie mínima no puede ser mayor que la máxima.")
+        return
+
+    encontrados = []
+    
+    for pais in paises:
+        if min_sup <= pais["poblacion"] <= max_sup:
+            encontrados.append(pais)
+
+    if len(encontrados) == 0:
+        print(f"No se encontraron países con superficie entre a {min_sup} y {max_sup}.")
     else:
         for pais in encontrados:
             print(f"País: {pais['nombre']} - Continente: {pais['continente']} - Población: {pais['poblacion']} - Superficie: {pais['superficie']}")

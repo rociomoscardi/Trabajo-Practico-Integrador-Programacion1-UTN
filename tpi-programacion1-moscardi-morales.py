@@ -170,8 +170,66 @@ def buscar_pais_nombre():
         for pais in encontrados:
             print(f"País: {pais['nombre']} - Continente: {pais['continente']} - Población: {pais['poblacion']} - Superficie: {pais['superficie']}")
 
+# 4. Filtrar países (continente/rango de población/rango de superficie)
+def filtrar_paises():
+    while True:
+        opcion = input("Seleccione una de las siguientes opciones: "
+        "\n1. Filtrar países por continente. " 
+        "\n2. Filtrar países por rango de población. " 
+        "\n3. Filtrar países por rango de superficie. " 
+        "\n4. Volver. ").strip()
+
+        if not validar_numero(opcion):
+            print ("El número ingresado no es válido. ")
+            return
+        else:
+            opcion = int(opcion)
+        
+        print("-------------------------------------------")
+
+        match opcion:
+            case 1: # Filtrar por continente.
+                filtrar_pais_continente()
+            case 2: # Filtrar por rango de población.
+                pass
+            case 3: # Filtrar por rango de superficie. 
+                pass
+            case 4: # Volver.
+                print("Volviendo...")
+                return
+            case _:
+                print("Por favor, seleccione una opción válida.")
+
+# 4.1 Filtrar países por continente
+def filtrar_pais_continente():
+    paises = obtenerPaises()
+    
+    if len(paises) == 0:
+        print("No hay países en el archivo. ")
+        return
+    
+    continente = input("Ingrese el continente por el cual desea filtrar los países: ").strip().title()
+    print()
+
+    if continente == "":
+        print("El continente ingresado no puede estar vacío.")
+        return
+
+    encontrados = []
+    
+    for pais in paises:
+        if continente == pais["continente"].title():
+            encontrados.append(pais)
+
+    if len(encontrados) == 0:
+        print(f"No se encontraron países que pertenezcan a {continente}.")
+    else:
+        for pais in encontrados:
+            print(f"País: {pais['nombre']} - Continente: {pais['continente']} - Población: {pais['poblacion']} - Superficie: {pais['superficie']}")
+    print()
+
 # Función que muestra el menú
-def mostrar_menu():
+def mostrar_menu_principal():
     while True:
         print("\n============ PAÍSES DEL MUNDO ============")
         opcion = input("Seleccione una de las siguientes opciones: "
@@ -200,7 +258,7 @@ def mostrar_menu():
             case 3: # Buscar un país por nombre (coincidencia parcial o exacta). 
                 buscar_pais_nombre()
             case 4: # Filtrar países (continente/rango de pobalción/rango de superficie).
-                pass
+                filtrar_paises()
             case 5: # Ordenar países (nombre/población/superficie).
                 pass
             case 6: # Mostrar estadísticas. 
@@ -211,5 +269,5 @@ def mostrar_menu():
             case _:
                 print("Por favor, seleccione una opción válida.")
 
-mostrar_menu()
+mostrar_menu_principal()
 

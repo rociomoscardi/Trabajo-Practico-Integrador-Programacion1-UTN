@@ -27,7 +27,7 @@ def obtenerPaises():
         print("El archivo no existe. Se está creando uno en este momento.")
         # Si no existe, lo crea
         with open (NOMBRE_ARCHIVO, "w", newline="", encoding="utf-8") as archivo:
-            escritor = csv.DictWriter(archivo, fieldnames=["nombre", "continente","poblacion", "superficie"])
+            escritor = csv.DictWriter(archivo, fieldnames=["nombre", "poblacion","superficie", "continente"])
             escritor.writeheader()
             return paises
 
@@ -36,13 +36,13 @@ def obtenerPaises():
         lector = csv.DictReader(archivo)
 
         for fila in lector:
-            paises.append({"nombre": fila["nombre"].strip().title(), "continente": fila["continente"].strip().title(),"poblacion": float(fila["poblacion"]), "superficie": float(fila["superficie"])})
+            paises.append({"nombre": fila["nombre"].strip().title(), "poblacion": float(fila["poblacion"]),"superficie": float(fila["superficie"]), "continente": fila["continente"].strip().title()})
     return paises
 
 # Función que guarda un nuevo país en el archivo sin modificar los existentes
 def agregarPais(pais):
     with open(NOMBRE_ARCHIVO, "a", newline="", encoding="utf-8") as archivo:
-        escritor = csv.DictWriter(archivo, fieldnames=["nombre", "continente", "poblacion", "superficie"])
+        escritor = csv.DictWriter(archivo, fieldnames=["nombre", "poblacion", "superficie", "continente"])
         escritor.writerow(pais)
 
 # 1. Agregar país
@@ -59,12 +59,6 @@ def agregar_pais():
     # Validamos que no se ingrese un país vacío
     elif pais == "":
         print("El país ingresado no puede estar vacío. ")
-        return
-
-    continente = input("Ingrese el continente al que pertenece el país: ").strip().title()
-
-    if continente == "":
-        print("El continente ingresado no puede estar vacío. ")
         return
     
     poblacion = input("Ingrese la población del país unicamente con números: ").strip()
@@ -83,8 +77,14 @@ def agregar_pais():
     else:
         superficie = float(superficie)
 
+    continente = input("Ingrese el continente al que pertenece el país: ").strip().title()
+
+    if continente == "":
+        print("El continente ingresado no puede estar vacío. ")
+        return
+
     # Agrega el nuevo país al archivo
-    agregarPais({"nombre": pais, "continente": continente, "poblacion": poblacion, "superficie": superficie})
+    agregarPais({"nombre": pais, "poblacion": poblacion, "superficie": superficie, "continente": continente})
     print(f"Se agregó correctamente: '{pais}' con sus datos correspondientes. ")
 
 # 2. Actualizar población y superficie
@@ -140,7 +140,7 @@ def actualizar_poblacion_superficie():
 
     # Reescribe el archivo CSV con los datos actualizados
     with open(NOMBRE_ARCHIVO, "w", newline="", encoding="utf-8") as archivo:
-        escritor = csv.DictWriter(archivo, fieldnames=["nombre", "continente", "poblacion", "superficie"])
+        escritor = csv.DictWriter(archivo, fieldnames=["nombre", "poblacion", "superficie", "continente"])
         escritor.writeheader()
         escritor.writerows(paises)
 
@@ -321,7 +321,7 @@ def ordenar_paises():
 
         match opcion:
             case 1: # Ordenar países por nombre.
-                pass
+                ordenar_paises_nombre()
             case 2: # Ordenar países por población.
                 pass
             case 3: # Ordenar países por superficie (ascendente/descendente). 
@@ -332,6 +332,24 @@ def ordenar_paises():
             case _:
                 print("Por favor, seleccione una opción válida.")
 
+# Función que recibe el diccionario y devulve el valor del campo "nombre"
+def clave_nombre(pais):
+        return pais["nombre"]
+
+# 5.1 Ordenar países por nombre.
+def ordenar_paises_nombre():
+    paises = obtenerPaises()
+
+    if len(paises) == 0:
+        print("No hay países en el archivo. ")
+        return
+
+    paises_ordenados = sorted(paises, key=clave_nombre)
+
+    print("Listado de países ordenados:")
+    for pais in paises_ordenados:
+        print(f"País: {pais['nombre']} - Continente: {pais['continente']} - Población: {pais['poblacion']} - Superficie: {pais['superficie']}")
+    print()
 
 # Función que muestra el menú
 def mostrar_menu_principal():

@@ -405,12 +405,8 @@ def mostrar_estadisticas():
         print("No hay países en el archivo.")
         return
 
-    # Función auxiliar que devuelve la población de un país
-    def obtener_poblacion(pais):
-        return pais["poblacion"]
-
-    pais_max = max(paises, key=obtener_poblacion)
-    pais_min = min(paises, key=obtener_poblacion)
+    pais_max = max(paises, key=clave_poblacion)
+    pais_min = min(paises, key=clave_poblacion)
 
     prom_poblacion = sum(p["poblacion"] for p in paises) / len(paises) # Promedio de la población de todos paises
     prom_superficie = sum(p["superficie"] for p in paises) / len(paises) # Promedio de superficie entre todos los paises.

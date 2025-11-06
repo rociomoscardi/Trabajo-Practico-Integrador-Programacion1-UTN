@@ -27,7 +27,7 @@ def obtenerPaises():
         print("El archivo no existe. Se está creando uno en este momento.")
         # Si no existe, lo crea
         with open (NOMBRE_ARCHIVO, "w", newline="", encoding="utf-8") as archivo:
-            escritor = csv.DictWriter(archivo, fieldnames=["nombre", "continente","poblacion", "superficie"])
+            escritor = csv.DictWriter(archivo, fieldnames=["nombre", "poblacion","superficie", "continente"])
             escritor.writeheader()
             return paises
 
@@ -36,13 +36,13 @@ def obtenerPaises():
         lector = csv.DictReader(archivo)
 
         for fila in lector:
-            paises.append({"nombre": fila["nombre"].strip().title(), "continente": fila["continente"].strip().title(),"poblacion": float(fila["poblacion"]), "superficie": float(fila["superficie"])})
+            paises.append({"nombre": fila["nombre"].strip().title(), "poblacion": float(fila["poblacion"]),"superficie": float(fila["superficie"]), "continente": fila["continente"].strip().title()})
     return paises
 
 # Función que guarda un nuevo país en el archivo sin modificar los existentes
 def agregarPais(pais):
     with open(NOMBRE_ARCHIVO, "a", newline="", encoding="utf-8") as archivo:
-        escritor = csv.DictWriter(archivo, fieldnames=["nombre", "continente", "poblacion", "superficie"])
+        escritor = csv.DictWriter(archivo, fieldnames=["nombre", "poblacion", "superficie", "continente"])
         escritor.writerow(pais)
 
 # 1. Agregar país
@@ -59,12 +59,6 @@ def agregar_pais():
     # Validamos que no se ingrese un país vacío
     elif pais == "":
         print("El país ingresado no puede estar vacío. ")
-        return
-
-    continente = input("Ingrese el continente al que pertenece el país: ").strip().title()
-
-    if continente == "":
-        print("El continente ingresado no puede estar vacío. ")
         return
     
     poblacion = input("Ingrese la población del país unicamente con números: ").strip()
@@ -83,8 +77,14 @@ def agregar_pais():
     else:
         superficie = float(superficie)
 
+    continente = input("Ingrese el continente al que pertenece el país: ").strip().title()
+
+    if continente == "":
+        print("El continente ingresado no puede estar vacío. ")
+        return
+
     # Agrega el nuevo país al archivo
-    agregarPais({"nombre": pais, "continente": continente, "poblacion": poblacion, "superficie": superficie})
+    agregarPais({"nombre": pais, "poblacion": poblacion, "superficie": superficie, "continente": continente})
     print(f"Se agregó correctamente: '{pais}' con sus datos correspondientes. ")
 
 # 2. Actualizar población y superficie
@@ -115,13 +115,15 @@ def actualizar_poblacion_superficie():
     if not validar_numero(nueva_poblacion) or nueva_poblacion == "":
         print("La población ingresada no es válida.")
         return
-    nueva_poblacion = float(nueva_poblacion)
+    else:
+        nueva_poblacion = float(nueva_poblacion)
 
     nueva_superficie = input("Ingrese la nueva superficie (en km²): ").strip()
     if not validar_numero(nueva_superficie) or nueva_superficie == "":
         print("La superficie ingresada no es válida.")
         return
-    nueva_superficie = float(nueva_superficie)
+    else:
+        nueva_superficie = float(nueva_superficie)
 
     # Actualiza los datos en la lista
     actualizado = False
@@ -138,7 +140,7 @@ def actualizar_poblacion_superficie():
 
     # Reescribe el archivo CSV con los datos actualizados
     with open(NOMBRE_ARCHIVO, "w", newline="", encoding="utf-8") as archivo:
-        escritor = csv.DictWriter(archivo, fieldnames=["nombre", "continente", "poblacion", "superficie"])
+        escritor = csv.DictWriter(archivo, fieldnames=["nombre", "poblacion", "superficie", "continente"])
         escritor.writeheader()
         escritor.writerows(paises)
 
@@ -177,7 +179,7 @@ def filtrar_paises():
         "\n1. Filtrar países por continente. " 
         "\n2. Filtrar países por rango de población. " 
         "\n3. Filtrar países por rango de superficie. " 
-        "\n4. Volver. ").strip()
+        "\n4. Volver. \n").strip()
 
         if not validar_numero(opcion):
             print ("El número ingresado no es válido. ")
@@ -191,9 +193,9 @@ def filtrar_paises():
             case 1: # Filtrar por continente.
                 filtrar_pais_continente()
             case 2: # Filtrar por rango de población.
-                pass
+                filtrar_pais_poblacion()
             case 3: # Filtrar por rango de superficie. 
-                pass
+                filtrar_pais_superficie()
             case 4: # Volver.
                 print("Volviendo...")
                 return
@@ -228,6 +230,210 @@ def filtrar_pais_continente():
             print(f"País: {pais['nombre']} - Continente: {pais['continente']} - Población: {pais['poblacion']} - Superficie: {pais['superficie']}")
     print()
 
+# 4.2 Filtrar países por rango de población
+def filtrar_pais_poblacion():
+    paises = obtenerPaises()
+    
+    if len(paises) == 0:
+        print("No hay países en el archivo. ")
+        return
+    
+    min_pob = input("Ingrese la población mínima: ").strip()
+    max_pob = input("Ingrese la población máxima: ").strip()
+    print()
+
+    if not validar_numero(min_pob) or not validar_numero(max_pob):
+        print("Ambos valores deben ser números válidos.")
+        return
+    else:
+        min_pob = float(min_pob)
+        max_pob = float(max_pob)
+
+    if min_pob > max_pob:
+        print("La población mínima no puede ser mayor que la máxima.")
+        return
+
+    encontrados = []
+    
+    for pais in paises:
+        if min_pob <= pais["poblacion"] <= max_pob:
+            encontrados.append(pais)
+
+    if len(encontrados) == 0:
+        print(f"No se encontraron países con población entre a {min_pob} y {max_pob}.")
+    else:
+        for pais in encontrados:
+            print(f"País: {pais['nombre']} - Continente: {pais['continente']} - Población: {pais['poblacion']} - Superficie: {pais['superficie']}")
+    print()
+
+# 4.3 Filtrar países por rango de superficie
+def filtrar_pais_superficie():
+    paises = obtenerPaises()
+    
+    if len(paises) == 0:
+        print("No hay países en el archivo. ")
+        return
+    
+    min_sup = input("Ingrese la superficie mínima: ").strip()
+    max_sup = input("Ingrese la superficie máxima: ").strip()
+    print()
+
+    if not validar_numero(min_sup) or not validar_numero(max_sup):
+        print("Ambos valores deben ser números válidos.")
+        return
+    else:
+        min_sup = float(min_sup)
+        max_sup = float(max_sup)
+
+    if min_sup > max_sup:
+        print("La superficie mínima no puede ser mayor que la máxima.")
+        return
+
+    encontrados = []
+    
+    for pais in paises:
+        if min_sup <= pais["poblacion"] <= max_sup:
+            encontrados.append(pais)
+
+    if len(encontrados) == 0:
+        print(f"No se encontraron países con superficie entre a {min_sup} y {max_sup}.")
+    else:
+        for pais in encontrados:
+            print(f"País: {pais['nombre']} - Continente: {pais['continente']} - Población: {pais['poblacion']} - Superficie: {pais['superficie']}")
+    print()
+    
+# 5. Ordenar países (nombre/población/superficie).
+
+def ordenar_paises():
+    while True:
+        opcion = input("Seleccione una de las siguientes opciones: "
+        "\n1. Ordenar países por nombre. " 
+        "\n2. Ordenar países por población. " 
+        "\n3. Ordenar países por superficie (ascendente/descendente). " 
+        "\n4. Volver. \n").strip()
+
+        if not validar_numero(opcion):
+            print ("El número ingresado no es válido. ")
+            return
+        else:
+            opcion = int(opcion)
+        
+        print("-------------------------------------------")
+
+        match opcion:
+            case 1: # Ordenar países por nombre.
+                ordenar_paises_nombre()
+            case 2: # Ordenar países por población.
+                 ordenar_paises_poblacion()
+            case 3: # Ordenar países por superficie (ascendente/descendente). 
+                ordenar_paises_superficie()
+            case 4: # Volver.
+                print("Volviendo...")
+                return
+            case _:
+                print("Por favor, seleccione una opción válida.")
+                
+# Funciones para obtener las claves de ordenamiento                
+def clave_nombre(pais):
+    return pais["nombre"]
+
+def clave_poblacion(pais):
+    return pais["poblacion"]
+
+def clave_superficie(pais):
+    return pais["superficie"]
+
+# Función que recibe el diccionario y devulve el valor del campo "nombre"
+def clave_nombre(pais):
+        return pais["nombre"]
+
+# 5.1 Ordenar países por nombre.
+def ordenar_paises_nombre():
+    paises = obtenerPaises()
+
+    if len(paises) == 0:
+        print("No hay países en el archivo. ")
+        return
+
+    paises_ordenados = sorted(paises, key=clave_nombre)
+
+    print("Listado de países ordenados:")
+    for pais in paises_ordenados:
+        print(f"País: {pais['nombre']} - Continente: {pais['continente']} - Población: {pais['poblacion']} - Superficie: {pais['superficie']}")
+    print()
+  
+# 5.2 Ordenar países por población
+def ordenar_paises_poblacion():
+    paises = obtenerPaises()
+
+    if len(paises) == 0:
+        print("No hay países en el archivo.")
+        return
+
+    paises_ordenados = sorted(paises, key=clave_poblacion, reverse=True)
+
+    print("Listado de países ordenados por población (mayor a menor):")
+    for pais in paises_ordenados:
+        print(f"País: {pais['nombre']} - Población: {pais['poblacion']} - Superficie: {pais['superficie']} - Continente: {pais['continente']}")
+    print()
+
+
+# 5.3 Ordenar países por superficie (ascendente o descendente)
+def ordenar_paises_superficie():
+    paises = obtenerPaises()
+
+    if len(paises) == 0:
+        print("No hay países en el archivo.")
+        return
+
+    orden = input("Desea ordenar por superficie ascendente (A) o descendente (D)? ").strip().upper()
+
+    if orden == "A":
+        paises_ordenados = sorted(paises, key=clave_superficie)
+        print("Listado de países ordenados por superficie (ascendente):")
+    elif orden == "D":
+        paises_ordenados = sorted(paises, key=clave_superficie, reverse=True)
+        print("Listado de países ordenados por superficie (descendente):")
+    else:
+        print("Opción no válida.")
+        return
+
+    for pais in paises_ordenados:
+        print(f"País: {pais['nombre']} - Superficie: {pais['superficie']} - Población: {pais['poblacion']} - Continente: {pais['continente']}")
+    print()    
+    
+def mostrar_estadisticas(paises):
+    if not paises:
+        print("No hay datos cargados.")
+        return
+
+    # Función auxiliar que devuelve la población de un país
+    def obtener_poblacion(pais):
+        return pais["poblacion"]
+
+    
+    pais_max = max(paises, key=obtener_poblacion)
+    pais_min = min(paises, key=obtener_poblacion)
+
+    prom_poblacion = sum(p["poblacion"] for p in paises) / len(paises)#Promedio de la población de todos paises
+    prom_superficie = sum(p["superficie"] for p in paises) / len(paises)#Promedio de superficie entre todos los paises.
+
+    continentes = {}
+    for p in paises:
+        cont = p["continente"]
+        continentes[cont] = continentes.get(cont, 0) + 1
+
+    print("\n============== Estadísticas ==============")
+    print(f"- Mayor población: {pais_max['nombre']} ({pais_max['poblacion']})")
+    print(f"- Menor población: {pais_min['nombre']} ({pais_min['poblacion']})")
+    print(f"- Promedio población: {prom_poblacion:.2f}")
+    print(f"- Promedio superficie: {prom_superficie:.2f}")
+    print("Países por continente:")
+    for c, n in continentes.items():
+        print(f"  - {c}: {n}")
+    print(input('Presione una tecla para continuar...'))
+
+
 # Función que muestra el menú
 def mostrar_menu_principal():
     while True:
@@ -239,7 +445,7 @@ def mostrar_menu_principal():
         "\n4. Filtrar países (continente/rango de pobalción/rango de superficie). "
         "\n5. Ordenar paises (nombre/población/superficie). "
         "\n6. Mostrar estadísticas. "
-        "\n7. Salir. ").strip()
+        "\n7. Salir. \n").strip()
 
         if not validar_numero(opcion):
             print ("El número ingresado no es válido. ")
@@ -260,9 +466,10 @@ def mostrar_menu_principal():
             case 4: # Filtrar países (continente/rango de pobalción/rango de superficie).
                 filtrar_paises()
             case 5: # Ordenar países (nombre/población/superficie).
-                pass
+               ordenar_paises()
             case 6: # Mostrar estadísticas. 
-                pass
+                paises = obtenerPaises()
+                mostrar_estadisticas(paises)
             case 7: # Salir
                 print("Saliendo...")
                 break

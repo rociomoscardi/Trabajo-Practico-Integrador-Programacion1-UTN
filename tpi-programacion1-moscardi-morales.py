@@ -100,7 +100,8 @@ def actualizar_poblacion_superficie():
     for pais in paises:
         print(f"País: {pais['nombre']} - Población: {pais['poblacion']} - Superficie: {pais['superficie']}.")
 
-    pais_ingresado = input("Ingrese el país para modificar su población y superficie. ").strip().title()
+    print()
+    pais_ingresado = input("Ingrese un país para modificar su población y superficie: ").strip().title()
 
     if pais_ingresado == "":
         print("El país ingresado no puede estar vacío.")
@@ -187,7 +188,7 @@ def filtrar_paises():
         else:
             opcion = int(opcion)
         
-        print("-------------------------------------------")
+        print("-----------------------------------------------")
 
         match opcion:
             case 1: # Filtrar por continente.
@@ -317,7 +318,7 @@ def ordenar_paises():
         else:
             opcion = int(opcion)
         
-        print("-------------------------------------------")
+        print("-----------------------------------------------")
 
         match opcion:
             case 1: # Ordenar países por nombre.
@@ -385,9 +386,11 @@ def ordenar_paises_superficie():
 
     if orden == "A":
         paises_ordenados = sorted(paises, key=clave_superficie)
+        print()
         print("Listado de países ordenados por superficie (ascendente):")
     elif orden == "D":
         paises_ordenados = sorted(paises, key=clave_superficie, reverse=True)
+        print()
         print("Listado de países ordenados por superficie (descendente):")
     else:
         print("Opción no válida.")
@@ -405,31 +408,38 @@ def mostrar_estadisticas():
         print("No hay países en el archivo.")
         return
 
+    # País con mayor y menor población
     pais_max = max(paises, key=clave_poblacion)
     pais_min = min(paises, key=clave_poblacion)
 
-    prom_poblacion = sum(p["poblacion"] for p in paises) / len(paises) # Promedio de la población de todos paises
-    prom_superficie = sum(p["superficie"] for p in paises) / len(paises) # Promedio de superficie entre todos los paises.
+    # Promedios
+    prom_poblacion = sum(pais["poblacion"] for pais in paises) / len(paises) # Promedio de la población de todos paises
+    prom_superficie = sum(pais["superficie"] for pais in paises) / len(paises) # Promedio de superficie entre todos los paises.
 
-    continentes = {}
-    for p in paises:
-        cont = p["continente"]
-        continentes[cont] = continentes.get(cont, 0) + 1
+    # Cantidad de países por continente
+    conteo_continentes = {}
+    for pais in paises:
+        continente = pais["continente"]
+        if continente in conteo_continentes:
+            conteo_continentes[continente] += 1
+        else:
+            conteo_continentes[continente] = 1
 
-    print("\n============== Estadísticas ==============")
-    print(f"- Mayor población: {pais_max['nombre']} ({pais_max['poblacion']})")
-    print(f"- Menor población: {pais_min['nombre']} ({pais_min['poblacion']})")
-    print(f"- Promedio población: {prom_poblacion:.2f}")
-    print(f"- Promedio superficie: {prom_superficie:.2f}")
-    print("Países por continente:")
-    for c, n in continentes.items():
-        print(f"  - {c}: {n}")
-    print(input('Presione una tecla para continuar...'))
+    # Mostrar resultados
+    print("\n============== Estadísticas Generales ==============")
+    print(f"- País con mayor población: {pais_max['nombre']} ({pais_max['poblacion']})")
+    print(f"- País con menor población: {pais_min['nombre']} ({pais_min['poblacion']})")
+    print(f"- Promedio de población: {prom_poblacion:.2f}")
+    print(f"- Promedio de superficie: {prom_superficie:.2f}")
+    print("Cantidad de países por continente:")
+    for continente, cantidad in conteo_continentes.items():
+        print(f"- {continente}: {cantidad} país(es)")
+    print()
 
 # Función que muestra el menú
 def mostrar_menu_principal():
     while True:
-        print("\n============ PAÍSES DEL MUNDO ============")
+        print("\n============== PAÍSES DEL MUNDO ==============")
         opcion = input("Seleccione una de las siguientes opciones: "
         "\n1. Agregar país. " 
         "\n2. Actualizar población y superficie. " 
@@ -441,11 +451,11 @@ def mostrar_menu_principal():
 
         if not validar_numero(opcion):
             print ("El número ingresado no es válido. ")
-            return
+            continue
         else:
             opcion = int(opcion)
         
-        print("-------------------------------------------")
+        print("-----------------------------------------------")
 
         # Estructura Case para realizar las acciones del menú según la opción elegida
         match opcion:

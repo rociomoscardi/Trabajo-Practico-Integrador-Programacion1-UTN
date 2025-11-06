@@ -323,14 +323,24 @@ def ordenar_paises():
             case 1: # Ordenar países por nombre.
                 ordenar_paises_nombre()
             case 2: # Ordenar países por población.
-                pass
+                 ordenar_paises_poblacion()
             case 3: # Ordenar países por superficie (ascendente/descendente). 
-                pass
+                ordenar_paises_superficie()
             case 4: # Volver.
                 print("Volviendo...")
                 return
             case _:
                 print("Por favor, seleccione una opción válida.")
+                
+# Funciones para obtener las claves de ordenamiento                
+def clave_nombre(pais):
+    return pais["nombre"]
+
+def clave_poblacion(pais):
+    return pais["poblacion"]
+
+def clave_superficie(pais):
+    return pais["superficie"]
 
 # Función que recibe el diccionario y devulve el valor del campo "nombre"
 def clave_nombre(pais):
@@ -350,6 +360,78 @@ def ordenar_paises_nombre():
     for pais in paises_ordenados:
         print(f"País: {pais['nombre']} - Continente: {pais['continente']} - Población: {pais['poblacion']} - Superficie: {pais['superficie']}")
     print()
+  
+# 5.2 Ordenar países por población
+def ordenar_paises_poblacion():
+    paises = obtenerPaises()
+
+    if len(paises) == 0:
+        print("No hay países en el archivo.")
+        return
+
+    paises_ordenados = sorted(paises, key=clave_poblacion, reverse=True)
+
+    print("Listado de países ordenados por población (mayor a menor):")
+    for pais in paises_ordenados:
+        print(f"País: {pais['nombre']} - Población: {pais['poblacion']} - Superficie: {pais['superficie']} - Continente: {pais['continente']}")
+    print()
+
+
+# 5.3 Ordenar países por superficie (ascendente o descendente)
+def ordenar_paises_superficie():
+    paises = obtenerPaises()
+
+    if len(paises) == 0:
+        print("No hay países en el archivo.")
+        return
+
+    orden = input("Desea ordenar por superficie ascendente (A) o descendente (D)? ").strip().upper()
+
+    if orden == "A":
+        paises_ordenados = sorted(paises, key=clave_superficie)
+        print("Listado de países ordenados por superficie (ascendente):")
+    elif orden == "D":
+        paises_ordenados = sorted(paises, key=clave_superficie, reverse=True)
+        print("Listado de países ordenados por superficie (descendente):")
+    else:
+        print("Opción no válida.")
+        return
+
+    for pais in paises_ordenados:
+        print(f"País: {pais['nombre']} - Superficie: {pais['superficie']} - Población: {pais['poblacion']} - Continente: {pais['continente']}")
+    print()    
+    
+def mostrar_estadisticas(paises):
+    if not paises:
+        print("No hay datos cargados.")
+        return
+
+    # Función auxiliar que devuelve la población de un país
+    def obtener_poblacion(pais):
+        return pais["poblacion"]
+
+    
+    pais_max = max(paises, key=obtener_poblacion)
+    pais_min = min(paises, key=obtener_poblacion)
+
+    prom_poblacion = sum(p["poblacion"] for p in paises) / len(paises)#Promedio de la población de todos paises
+    prom_superficie = sum(p["superficie"] for p in paises) / len(paises)#Promedio de superficie entre todos los paises.
+
+    continentes = {}
+    for p in paises:
+        cont = p["continente"]
+        continentes[cont] = continentes.get(cont, 0) + 1
+
+    print("\n============== Estadísticas ==============")
+    print(f"- Mayor población: {pais_max['nombre']} ({pais_max['poblacion']})")
+    print(f"- Menor población: {pais_min['nombre']} ({pais_min['poblacion']})")
+    print(f"- Promedio población: {prom_poblacion:.2f}")
+    print(f"- Promedio superficie: {prom_superficie:.2f}")
+    print("Países por continente:")
+    for c, n in continentes.items():
+        print(f"  - {c}: {n}")
+    print(input('Presione una tecla para continuar...'))
+
 
 # Función que muestra el menú
 def mostrar_menu_principal():
@@ -385,7 +467,8 @@ def mostrar_menu_principal():
             case 5: # Ordenar países (nombre/población/superficie).
                 ordenar_paises()
             case 6: # Mostrar estadísticas. 
-                pass
+                paises = obtenerPaises()
+                mostrar_estadisticas(paises)
             case 7: # Salir
                 print("Saliendo...")
                 break

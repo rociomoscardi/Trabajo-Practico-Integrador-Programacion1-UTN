@@ -301,9 +301,8 @@ def filtrar_pais_superficie():
         for pais in encontrados:
             print(f"País: {pais['nombre']} - Continente: {pais['continente']} - Población: {pais['poblacion']} - Superficie: {pais['superficie']}")
     print()
-    
-# 5. Ordenar países (nombre/población/superficie).
 
+# 5. Ordenar países (nombre/población/superficie).
 def ordenar_paises():
     while True:
         opcion = input("Seleccione una de las siguientes opciones: "
@@ -466,7 +465,7 @@ def mostrar_menu_principal():
             case 4: # Filtrar países (continente/rango de pobalción/rango de superficie).
                 filtrar_paises()
             case 5: # Ordenar países (nombre/población/superficie).
-               ordenar_paises()
+                ordenar_paises()
             case 6: # Mostrar estadísticas. 
                 paises = obtenerPaises()
                 mostrar_estadisticas(paises)

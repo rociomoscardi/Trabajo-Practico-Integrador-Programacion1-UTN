@@ -39,24 +39,24 @@ El archivo paises.csv se crea automáticamente si no existe, y se actualiza din�
 
 ## 💡 Ejemplos de entradas y salidas
 **➕ Agregar país**
-- Entrada:\n
+- Entrada:
 Ingrese el país que desea agregar: Argentina
 Ingrese la población del país unicamente con números: 47000000
 Ingrese la superficie del país (en km²): 2780000
 Ingrese el continente al que pertenece el país: América
 
-- Salida:\n
+- Salida:
 Se agregó correctamente: 'Argentina' con sus datos correspondientes.
 
 **🔍 Buscar país**
-- Entrada:\n
+- Entrada:
 Ingrese el nombre del país que desea buscar: Argen
 
-- Salida:\n
+- Salida:
 País: Argentina - Continente: América - Población: 47000000 - Superficie: 2780000
 
 **📊 Mostrar estadísticas**
-- Salida:\n
+- Salida:
 ============== Estadísticas Generales ==============
 - País con mayor población: China (1400000000)
 - País con menor población: Uruguay (3500000)

@@ -48,7 +48,6 @@ def agregarPais(pais):
 # 1. Agregar país
 def agregar_pais():
     paises = obtenerPaises()
-    nuevos_paises = []
 
     pais = input("Ingrese el país que desea agregar: ").strip().title()
 
@@ -168,7 +167,7 @@ def buscar_pais_nombre():
             encontrados.append(pais)
 
     if len(encontrados) == 0:
-        print(f"No se encontraron países que coincidad con '{pais_ingresado}'")
+        print(f"No se encontraron países que coincidan con '{pais_ingresado}'")
     else:
         for pais in encontrados:
             print(f"País: {pais['nombre']} - Continente: {pais['continente']} - Población: {pais['poblacion']} - Superficie: {pais['superficie']}")
@@ -293,7 +292,7 @@ def filtrar_pais_superficie():
     encontrados = []
     
     for pais in paises:
-        if min_sup <= pais["poblacion"] <= max_sup:
+        if min_sup <= pais["superficie"] <= max_sup:
             encontrados.append(pais)
 
     if len(encontrados) == 0:
